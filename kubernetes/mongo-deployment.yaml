@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: wanderlust
+  labels:
+    database: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      database: mongodb
+  template:
+    metadata:
+      labels:
+        database: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo
+          env: 
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "admin"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "admin"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+      volumes:
+        - name: mongo-data
+          emptyDir: {}
