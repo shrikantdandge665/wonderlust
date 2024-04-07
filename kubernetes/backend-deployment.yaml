@@ -19,7 +19,11 @@ spec:
         - name: backend
           image: madhupdevops/backend-wanderlust:latest
           env:
-            - name: MONGODB_URI
-              value: "mongodb://mongo-service.wanderlust:27017/wanderlust"
+            - name: MONGO_CONN_STR
+              value: mongodb://mongo-service:27017/wanderlust?directConnection=true
+            - name: MONGO_USERNAME
+              value: admin
+            - name: MONGO_PASSWORD
+              value: admin
           ports:
             - containerPort: 5000
