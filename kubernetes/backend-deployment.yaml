@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: wanderlust
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: madhupdevops/backend-wanderlust:latest
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://mongo-service.wanderlust:27017/wanderlust"
+          ports:
+            - containerPort: 5000
