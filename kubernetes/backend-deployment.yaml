@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: wanderlust
   labels:
     app: backend
 spec:
@@ -19,11 +18,7 @@ spec:
         - name: backend
           image: madhupdevops/backend-wanderlust:latest
           env:
-            - name: MONGO_CONN_STR
-              value: mongodb://mongo-service:27017/wanderlust?directConnection=true
-            - name: MONGO_USERNAME
-              value: admin
-            - name: MONGO_PASSWORD
-              value: admin
+            - name: MONGODB_URI
+              value: mongodb://admin:admin@mongo-service:27017/wanderlust
           ports:
             - containerPort: 5000
