@@ -60,7 +60,7 @@ pipeline{
         stage("Docker login && Push to DockerHub "){
             steps{
               withCredentials([usernamePassword(credentialsId:"DockerCred",passwordVariable:"dockerhubpass",usernameVariable:"dockerhubname")]){
-                  sh "docker login -u madhupdevops -p Madhup@2908"
+                  sh "docker login -u madhupdevops -p "
                 }
             }
         }
@@ -74,7 +74,9 @@ pipeline{
         
         stage("Code Deploy"){
             steps{    
+                dir("../"){
                 sh "docker-compose down && docker-compose up -d"
+            }
             }
         }
     }
