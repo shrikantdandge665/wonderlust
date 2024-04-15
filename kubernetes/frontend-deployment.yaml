@@ -30,7 +30,8 @@ metadata:
   name: frontend
 spec:
   ports:
-  - port: 3000
+  - port: 5173
+    targetPort: 5173
     nodePort: 30001
     protocol: TCP
   type: NodePort
