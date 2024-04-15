@@ -4,15 +4,10 @@ pipeline{
         SONAR_HOME= tool "Sonar"
     }
     stages{
-
-        stage("Clean Workspace"){
+      
+        stage("Clean Workspace and Code Checkout"){
             steps{
                 cleanWs()
-            }
-        }
-      
-        stage("Code Checkout"){
-            steps{
                 git url:"https://github.com/DevMadhup/wanderlust.git", branch:"main"
             }
         }
