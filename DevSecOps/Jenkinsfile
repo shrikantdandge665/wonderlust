@@ -35,48 +35,16 @@ pipeline{
             }
         }
         
-        stage("Docker Code Build: Frontend"){
-            steps{
-                dir("frontend"){
-                sh "docker build -t madhupdevops/frontend-wanderlust:v4 ."
-            }
-            }
-        }
-
-        stage("Docker Code Build: Backend"){
-            steps{
-                dir("backend"){
-                sh "docker build -t madhupdevops/backend-wanderlust:v4 ."
-            }
-            }
-        }
-        
         stage("Trivy filesystem Scan"){
             steps{
                 sh "trivy fs --format table -o trivy-fs-report.html ."
             }
         }
         
-        stage("Docker login && Push to DockerHub "){
-            steps{
-              withCredentials([usernamePassword(credentialsId:"DockerCred",passwordVariable:"dockerhubpass",usernameVariable:"dockerhubname")]){
-                  sh "docker login -u madhupdevops -p "
-                }
-            }
-        }
-        
-        stage("Code Push to DockerHub"){
-            steps{
-                sh "docker push madhupdevops/frontend-wanderlust:v4"
-                sh "docker push madhupdevops/backend-wanderlust:v4"
-            }
-        }
-        
-        stage("Code Deploy"){
+        stage("Code Deploy: Docker-compose"){
             steps{    
-                dir("../"){
+               
                 sh "docker-compose down && docker-compose up -d"
-            }
             }
         }
     }
