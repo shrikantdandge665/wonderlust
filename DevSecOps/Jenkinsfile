@@ -11,6 +11,18 @@ pipeline{
                 git url:"https://github.com/DevMadhup/wanderlust.git", branch:"main"
             }
         }
+
+        stage("Docker build: Frontend"){
+            dir("frontend"){
+            sh "docker build -t frontend ."
+            }
+        }
+
+        stage("Docker build: backend"){
+            dir("backend"){
+            sh "docker build -t backend ."
+            }
+        }
         
         stage("SonarQube Code Analysis"){
             steps{
