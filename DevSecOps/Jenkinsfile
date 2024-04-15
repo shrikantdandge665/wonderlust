@@ -13,14 +13,18 @@ pipeline{
         }
 
         stage("Docker build: Frontend"){
+            steps{
             dir("frontend"){
             sh "docker build -t frontend ."
+            }
             }
         }
 
         stage("Docker build: backend"){
+            steps{
             dir("backend"){
             sh "docker build -t backend ."
+            }
             }
         }
         
