@@ -16,9 +16,21 @@ spec:
     spec:
       containers:
         - name: backend
-          image: madhupdevops/backend-wanderlust:v1
+          image: madhupdevops/backend-wanderlust:v2
           env:
             - name: MONGODB_URI
-              value: mongodb://admin:admin@mongo-service:27017/wanderlust
+              value: mongodb://mongo-service:27017/wanderlust
           ports:
             - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec: 
+  ports:
+  - port: 5000
+    protocol: TCP
+  type: ClusterIP
+  selector:
+    app: backend
