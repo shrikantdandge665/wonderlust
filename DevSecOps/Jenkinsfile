@@ -27,12 +27,6 @@ pipeline{
                     }
                 }
         }
-
-        stage("Install Deps"){
-            steps{
-                sh "npm install"
-            }
-        }
         
         stage("OWASP Dependency Check"){
             steps{
