@@ -41,17 +41,19 @@ pipeline{
         }
         
         stage("Docker Code Build: Frontend"){
-          dir("../DevSecOps/frontend/")
+          dir("../DevSecOps/frontend/"){
             steps{
                 sh "docker build -t madhupdevops/frontend-wanderlust:v4 ."
             }
+          }
         }
 
         stage("Docker Code Build: Backend"){
-          dir("../DevSecOps/backend/")
+          dir("../DevSecOps/backend/"){
             steps{
                 sh "docker build -t madhupdevops/backend-wanderlust:v4 ."
             }
+          }
         }
         
         stage("Trivy filesystem Scan"){
