@@ -1,0 +1,84 @@
+pipeline{
+    agent any
+    environment{
+        SONAR_HOME= tool "Sonar"
+    }
+    stages{
+
+        stage("Clean Workspace"){
+            steps{
+                cleanWs()
+            }
+        }
+      
+        stage("Code Checkout"){
+            steps{
+                git url:"https://github.com/DevMadhup/wanderlust.git", branch:"main"
+            }
+        }
+        
+        stage("SonarQube Code Analysis"){
+            steps{
+                withSonarQubeEnv("Sonar"){
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
+                }
+            }
+        }
+        
+        stage("SonarQube Code Quality Gates"){
+                steps{
+                    timeout(time: 2, unit: "MINUTES"){
+                        waitForQualityGate abortPipeline: false
+                    }
+                }
+        }
+        
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DC'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        
+        stage("Docker Code Build: Frontend"){
+          dir("../DevSecOps/frontend/")
+            steps{
+                sh "docker build -t madhupdevops/frontend-wanderlust:v4 ."
+            }
+        }
+
+        stage("Docker Code Build: Backend"){
+          dir("../DevSecOps/backend/")
+            steps{
+                sh "docker build -t madhupdevops/backend-wanderlust:v4 ."
+            }
+        }
+        
+        stage("Trivy filesystem Scan"){
+            steps{
+                sh "trivy fs --format table -o trivy-fs-report.html ."
+            }
+        }
+        
+        stage("Docker login && Push to DockerHub "){
+            steps{
+              withCredentials([usernamePassword(credentialsId:"DockerCred",passwordVariable:"dockerhubpass",usernameVariable:"dockerhubname")]){
+                  sh "docker login -u madhupdevops -p ${env.dockerhubpass}"
+                }
+            }
+        }
+        
+        stage("Code Push to DockerHub"){
+            steps{
+                sh "docker push madhupdevops/frontend-wanderlust:v4"
+                sh "docker push madhupdevops/backend-wanderlust:v4"
+            }
+        }
+        
+        stage("Code Deploy"){
+            steps{    
+                sh "docker-compose down && docker-compose up -d"
+            }
+        }
+    }
+}
