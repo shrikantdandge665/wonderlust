@@ -37,13 +37,17 @@ pipeline{
         
         stage("Docker Code Build: Frontend"){
             steps{
-                sh "docker build -t madhupdevops/frontend-wanderlust:v4 -f frontend/Dockerfile ."
+                dir("frontend"){
+                sh "docker build -t madhupdevops/frontend-wanderlust:v4 ."
+            }
             }
         }
 
         stage("Docker Code Build: Backend"){
             steps{
-                sh "docker build -t madhupdevops/backend-wanderlust:v4 -f backend/Dockerfile ."
+                dir("backend"){
+                sh "docker build -t madhupdevops/backend-wanderlust:v4 ."
+            }
             }
         }
         
