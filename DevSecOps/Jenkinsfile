@@ -5,9 +5,8 @@ pipeline{
     }
     stages{
       
-        stage("Clean Workspace and Code Checkout"){
+        stage("Code Checkout"){
             steps{
-                cleanWs()
                 git url:"https://github.com/DevMadhup/wanderlust.git", branch:"main"
             }
         }
@@ -17,6 +16,13 @@ pipeline{
                 withSonarQubeEnv("Sonar"){
                     sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust"
                 }
+            }
+        }
+
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DC'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
         
